@@ -1,11 +1,10 @@
 
 from django.contrib import admin
 from django.urls import path, include
-from module.views import index, about
+from module.views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('products/', include('module.urls')),
     path('', index, name='index'),
-    path('about/', about, name='about')
 ]
