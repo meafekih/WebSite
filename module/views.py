@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
+from rest_framework import status
 from .models import product
 
 
@@ -41,10 +42,29 @@ def createProduct(request):
     else:
         return Response(serializer.errors) 
     
-@api_view(['DELETE'])
-def deleteProduct(request,pk):
-    p = product.objects.get(id=pk)
-    p.delete()
-    return JsonResponse({ 
-        "message" : "Deleted with success! "
-    })
+@api_view(['GET','PUT','DELETE'])
+def operations(request,pk):
+    try:
+        p = product.objects.get(pk=pk)
+    except:
+        return Response({ 
+            "message" : "not Found! "
+        }, status= status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        serilizer = productSerializer(p)
+        return Response(serilizer.data, status=status.HTTP_200_OK)
+    
+    elif request.method == 'PUT':
+        serilizer = productSerializer(p, request.data)
+        if serilizer.is_valid():
+            serilizer.save()
+            return Response(serilizer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method =='DELETE':
+        p.delete()
+        return Response({ 
+            "message" : "Deleted with success! "
+        }, status=status.HTTP_204_NO_CONTENT)
+
