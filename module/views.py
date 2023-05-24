@@ -81,14 +81,18 @@ from .models import product
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-class product_api(generics.GenericAPIView, mixins.CreateModelMixin,mixins.DestroyModelMixin,
-                mixins.ListModelMixin, mixins.RetrieveModelMixin,mixins.UpdateModelMixin):
+class product_api(generics.GenericAPIView, 
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin, 
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin):
 
     serializer_class = productSerializer
     queryset = product.objects.all()
     lookup_field = 'id'
-    #authentication_classes = [SessionAuthentication, BasicAuthentication]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    #authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id=None):
